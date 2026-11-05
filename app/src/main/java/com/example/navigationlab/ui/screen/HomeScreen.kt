@@ -3,75 +3,113 @@ package com.example.navigationlab.ui.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.navigationlab.data.model.Student
+import com.example.navigationlab.ui.home.HomeUiState
 
 @Composable
 fun HomeScreen(
-    onOpenDetail: (Long) -> Unit,
+    uiState: HomeUiState,
+    onStudentClick: (Int) -> Unit,
     onOpenProfile: () -> Unit,
     onOpenAbout: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFEAF6FF)),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .background(Color(0xFFEAF6FF))
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            text = "Home",
+            text = "Daftar Mahasiswa",
+            style = MaterialTheme.typography.headlineMedium,
             color = Color(0xFF4F7899)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = {
-                onOpenDetail(245150201111042L)
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF7DB7D9)
-            )
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = "Buka Detail",
-                color = Color.White
-            )
+            items(
+                items = uiState.students,
+                key = { student -> student.id }
+            ) { student ->
+                StudentItem(
+                    student = student,
+                    onClick = {
+                        onStudentClick(student.id)
+                    }
+                )
+            }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedButton(
-            onClick = onOpenProfile
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = "Buka Profile",
-                color = Color(0xFF8B72B8)
-            )
+            Button(
+                modifier = Modifier.weight(1f),
+                onClick = onOpenProfile,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFA78BCB)
+                )
+            ) {
+                Text("Buka Profile")
+            }
+
+            Button(
+                modifier = Modifier.weight(1f),
+                onClick = onOpenAbout,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFD99AB6)
+                )
+            ) {
+                Text("Buka About")
+            }
         }
+    }
+}
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Button(
-            onClick = onOpenAbout,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFD99AB6)
-            )
+@Composable
+private fun StudentItem(
+    student: Student,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFFF5FBFF))
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                text = "Buka About",
-                color = Color.White
+                text = "ID: ${student.id}",
+                style = MaterialTheme.typography.titleMedium,
+                color = Color(0xFF4F7899)
+            )
+
+            Text(
+                text = student.name,
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     }

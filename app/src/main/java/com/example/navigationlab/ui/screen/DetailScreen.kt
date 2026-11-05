@@ -14,10 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.navigationlab.ui.detail.DetailUIState
 
 @Composable
 fun DetailScreen(
-    studentId: Long,
+    uiState: DetailUIState,
     onBack: () -> Unit
 ) {
     Column(
@@ -28,16 +29,26 @@ fun DetailScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Detail",
+            text = "Detail Student",
             color = Color(0xFF5B9072)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = "Student ID: $studentId",
-            color = Color(0xFF4F705D)
-        )
+        when {
+            uiState.errorMsg != null -> {
+                Text(uiState.errorMsg)
+            }
+
+            uiState.student != null -> {
+                val student = uiState.student
+
+                Text("ID: ${student.id}")
+                Text("Nama: ${student.name}")
+                Text("Program: ${student.program}")
+                Text("Angkatan: ${student.year}")
+            }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
